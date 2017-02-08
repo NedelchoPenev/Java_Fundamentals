@@ -4,7 +4,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class p02_VowelCount {
+public class P02_VowelCount {
 
     public static void main(String[] args) {
         Scanner console =  new Scanner(System.in);
