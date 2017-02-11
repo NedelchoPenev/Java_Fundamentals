@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class p01_SortOddNumbers {
+public class P01_SortOddNumbers {
 
     public static void main(String[] args) throws IOException {
         BufferedReader console = new BufferedReader(new InputStreamReader(System.in));

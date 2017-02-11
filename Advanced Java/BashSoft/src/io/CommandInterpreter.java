@@ -1,3 +1,9 @@
+package io;
+
+import judge.Tester;
+import repository.StudentsRepository;
+import staticData.SessionData;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -34,10 +40,10 @@ public class CommandInterpreter {
                 tryShowWantedCourse(input, data);
                 break;
             case "filter":
-                // TODO: Implement method
+                tryPrintFilteredStudents(input, data);
                 break;
             case "order":
-                // TODO: Implement method
+                tryPrintOrderedStudents(input, data);
                 break;
             case "download":
                 // TODO: Implement method
@@ -56,6 +62,47 @@ public class CommandInterpreter {
     }
 
 
+    private static void tryPrintFilteredStudents(String input, String[] data) {
+        if (data.length != 3 && data.length != 4) {
+            displayInvalidCommandMessage(input);
+            return;
+        }
+
+        String course = data[1];
+        String filter = data[2];
+
+        if (data.length == 3) {
+            StudentsRepository.printFilteredStudents(course, filter, null);
+            return;
+        }
+
+        Integer numberOfStudents = Integer.valueOf(data[3]);
+
+        if (data.length == 4) {
+            StudentsRepository.printFilteredStudents(course, filter, numberOfStudents);
+        }
+    }
+
+    private static void tryPrintOrderedStudents(String input, String[] data) {
+        if (data.length != 3 && data.length != 4) {
+            displayInvalidCommandMessage(input);
+            return;
+        }
+
+        String course = data[1];
+        String compareType = data[2];
+
+        if (data.length == 3) {
+            StudentsRepository.printOrderedStudents(course, compareType, null);
+            return;
+        }
+
+        Integer numberOfStudents = Integer.valueOf(data[3]);
+
+        if (data.length == 4) {
+            StudentsRepository.printOrderedStudents(course, compareType, numberOfStudents);
+        }
+    }
 
     private static void tryOpenFile(String input, String[] data) throws IOException {
         if (data.length != 2){

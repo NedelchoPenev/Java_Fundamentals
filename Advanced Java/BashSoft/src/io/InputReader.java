@@ -1,3 +1,7 @@
+package io;
+
+import staticData.SessionData;
+
 import java.io.IOException;
 import java.util.Scanner;
 

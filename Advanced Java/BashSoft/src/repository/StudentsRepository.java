@@ -1,7 +1,15 @@
+package repository;
+
+import io.OutputWriter;
+import staticData.*;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +26,30 @@ public class StudentsRepository {
 
         studentsByCourse = new HashMap<>();
         readData(fileName);
+    }
+
+    public static void printFilteredStudents(String course, String filter, Integer numberOfStudents) {
+        if (!isQueryForCoursePossible(course)) {
+            return;
+        }
+
+        if (numberOfStudents == null) {
+            numberOfStudents = studentsByCourse.get(course).size();
+        }
+
+        RepositoryFilters.printFilteredStudents(studentsByCourse.get(course), filter, numberOfStudents);
+    }
+
+    public static void printOrderedStudents(String course, String compareType, Integer numberOfStudents) {
+        if (!isQueryForCoursePossible(course)) {
+            return;
+        }
+
+        if (numberOfStudents == null) {
+            numberOfStudents = studentsByCourse.get(course).size();
+        }
+
+        PepositorySorters.printSortedStudents(studentsByCourse.get(course), compareType, numberOfStudents);
     }
 
     private static void readData(String fileName) throws IOException {
@@ -86,12 +118,12 @@ public class StudentsRepository {
         ArrayList<Integer> marks = studentsByCourse.get(course).get(student);
         OutputWriter.printStudent(student, marks);
     }
-    
+
     public static void getStudentsByCourse(String course){
         if (!isQueryForCoursePossible(course)){
             return;
         }
-        
+
         OutputWriter.writeMessageOnNewLine(course + ":");
         for (Map.Entry<String, ArrayList<Integer>> student : studentsByCourse.get(course).entrySet()) {
             OutputWriter.printStudent(student.getKey(), student.getValue());
