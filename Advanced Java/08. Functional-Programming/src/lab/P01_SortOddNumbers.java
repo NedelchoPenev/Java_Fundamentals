@@ -13,15 +13,15 @@ public class P01_SortOddNumbers {
         BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
         List<String> input = Arrays.asList(console.readLine().split(", "));
 
-        StringBuilder nums = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         List<Integer> numbers = input.stream()
                 .map(Integer::parseInt)
                 .filter(n -> n % 2 == 0)
                 .collect(Collectors.toList());
-        numbers.forEach(n -> nums.append(String.format("%d, ", n)));
+        numbers.forEach(n -> stringBuilder.append(String.format("%d, ", n)));
 
-        nums.delete(nums.length() - 2, nums.length());
-        System.out.println(nums);
+        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+        System.out.println(stringBuilder);
 
         numbers.sort(Integer::compareTo);
 
