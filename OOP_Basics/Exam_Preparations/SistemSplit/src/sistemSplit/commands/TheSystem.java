@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TheSystem implements iTheSystem {
+
     private LinkedHashMap<String, HardwareComponent> hardwareComponents;
     private LinkedHashMap<String, SoftwareComponent> softwareComponents;
     private LinkedHashMap<String, HardwareComponent> dumpComponents;
@@ -14,6 +15,7 @@ public class TheSystem implements iTheSystem {
     public TheSystem() {
         this.hardwareComponents = new LinkedHashMap<>();
         this.softwareComponents = new LinkedHashMap<>();
+        this.dumpComponents = new LinkedHashMap<>();
     }
 
     @Override
@@ -54,7 +56,7 @@ public class TheSystem implements iTheSystem {
             int availableMemory = maxMemory - this.hardwareComponents.get(hardwareComponentName).getMemoryTaken();
 
             if (availableCapacity >= softwareComponent.getCapacity() &&
-                    availableMemory >= softwareComponent.getMemory()){
+                    availableMemory >= softwareComponent.getMemory()) {
 
                 this.hardwareComponents.get(hardwareComponentName)
                         .registerSoftwareComponent(softwareComponent);
@@ -74,10 +76,10 @@ public class TheSystem implements iTheSystem {
     @Override
     public void analyze() {
         System.out.printf("System Analysis\n" +
-                "Hardware Components: %d\n" +
-                "Software Components: %d\n" +
-                "Total Operational Memory: %d / %d\n" +
-                "Total Capacity Taken: %d / %d\n",
+                        "Hardware Components: %d\n" +
+                        "Software Components: %d\n" +
+                        "Total Operational Memory: %d / %d\n" +
+                        "Total Capacity Taken: %d / %d\n",
                 this.hardwareComponents.size(),
                 getSoftwareComponents(),
                 totalOperationalMemoryInUse(),
@@ -96,7 +98,7 @@ public class TheSystem implements iTheSystem {
         return count;
     }
 
-    private int totalOperationalMemoryInUse(){
+    private int totalOperationalMemoryInUse() {
         int totalOperationalMemoryInUse = 0;
         for (HardwareComponent hardwareComponent : hardwareComponents.values()) {
             totalOperationalMemoryInUse += hardwareComponent.getMemoryTaken();
@@ -105,7 +107,7 @@ public class TheSystem implements iTheSystem {
         return totalOperationalMemoryInUse;
     }
 
-    private int maximumMemory(){
+    private int maximumMemory() {
         int maximumMemory = 0;
         for (HardwareComponent hardwareComponent : hardwareComponents.values()) {
             maximumMemory += hardwareComponent.getMemory();
@@ -113,7 +115,7 @@ public class TheSystem implements iTheSystem {
         return maximumMemory;
     }
 
-    private int totalCapacityTaken(){
+    private int totalCapacityTaken() {
         int totalCapacityTaken = 0;
         for (HardwareComponent hardwareComponent : hardwareComponents.values()) {
             totalCapacityTaken += hardwareComponent.getCapacityTaken();
@@ -122,7 +124,7 @@ public class TheSystem implements iTheSystem {
         return totalCapacityTaken;
     }
 
-    private int maximumCapacity(){
+    private int maximumCapacity() {
         int maximumCapacity = 0;
         for (HardwareComponent hardwareComponent : hardwareComponents.values()) {
             maximumCapacity += hardwareComponent.getCapacity();
@@ -135,12 +137,12 @@ public class TheSystem implements iTheSystem {
     public void split() {
         for (HardwareComponent hardwareComponent : hardwareComponents.values()) {
             System.out.printf("Hardware Component - %s\n" +
-                    "Express Software Components - %d\n" +
-                    "Light Software Components - %d\n" +
-                    "Memory Usage: %d / %d\n" +
-                    "Capacity Usage: %d / %d\n" +
-                    "Type: %s\n" +
-                    "Software Components: %s\n",
+                            "Express Software Components - %d\n" +
+                            "Light Software Components - %d\n" +
+                            "Memory Usage: %d / %d\n" +
+                            "Capacity Usage: %d / %d\n" +
+                            "Type: %s\n" +
+                            "Software Components: %s\n",
                     hardwareComponent.getName(),
                     countOfExpressSoftwareComponents(hardwareComponent),
                     countOfLightSoftwareComponents(hardwareComponent),
@@ -153,8 +155,8 @@ public class TheSystem implements iTheSystem {
         }
     }
 
-    private String getComponents(List<SoftwareComponent> components){
-        if (components.isEmpty()){
+    private String getComponents(List<SoftwareComponent> components) {
+        if (components.isEmpty()) {
             return "None";
         }
 
@@ -165,54 +167,97 @@ public class TheSystem implements iTheSystem {
         return String.join(", ", names);
     }
 
-    private long countOfExpressSoftwareComponents(HardwareComponent hardwareComponent){
+    private long countOfExpressSoftwareComponents(HardwareComponent hardwareComponent) {
         return hardwareComponent.getComponents()
                 .stream()
                 .filter(c -> c.getType().equals("Express"))
                 .count();
     }
 
-    private long countOfLightSoftwareComponents(HardwareComponent hardwareComponent){
+    private long countOfLightSoftwareComponents(HardwareComponent hardwareComponent) {
         return hardwareComponent.getComponents()
                 .stream()
                 .filter(c -> c.getType().equals("Light"))
                 .count();
     }
 
-    private void dump(String hardwareComponentName){
-        if (this.hardwareComponents.containsKey(hardwareComponentName)){
+    public void dump(String hardwareComponentName) {
+        if (this.hardwareComponents.containsKey(hardwareComponentName)) {
             this.dumpComponents.put(hardwareComponentName, this.hardwareComponents.get(hardwareComponentName));
             this.hardwareComponents.remove(hardwareComponentName);
         }
     }
 
-    private void restore(String hardwareComponentName){
-        if (this.dumpComponents.containsKey(hardwareComponentName)){
+    public void restore(String hardwareComponentName) {
+        if (this.dumpComponents.containsKey(hardwareComponentName)) {
             this.hardwareComponents.put(hardwareComponentName, this.dumpComponents.get(hardwareComponentName));
             this.dumpComponents.remove(hardwareComponentName);
         }
     }
 
-    private void destroy(String hardwareComponentName){
-        if (this.dumpComponents.containsKey(hardwareComponentName)){
+    public void destroy(String hardwareComponentName) {
+        if (this.dumpComponents.containsKey(hardwareComponentName)) {
             this.dumpComponents.remove(hardwareComponentName);
         }
     }
 
-    private void DumpAnalyze(){
+    public void dumpAnalyze() {
+        System.out.printf("Dump Analysis\n" +
+                        "Power Hardware Components: %s\n" +
+                        "Heavy Hardware Components: %s\n" +
+                        "Express Software Components: %d\n" +
+                        "Light Software Components: %d\n" +
+                        "Total Dumped Memory: %s\n" +
+                        "Total Dumped Capacity: %s\n",
+                gerPowerHardware(),
+                getHeavyHardware(),
+                countOfExpressSoftwareComponents(),
+                countOfLightSoftwareComponents(),
+                totalDumpedMemory(),
+                totalDumpedCapacity());
+
+    }
+
+    private long totalDumpedCapacity() {
+        long total = 0;
         for (HardwareComponent hardwareComponent : dumpComponents.values()) {
-            System.out.printf("Dump Analysis \n" +
-                            "Power Hardware Components: %s\n" +
-                            "Heavy Hardware Components: %s\n" +
-                            "Express Software Components: %d\n" +
-                            "Light Software Components: %d\n" +
-                            "Total Dumped Memory: {totalDumpedMemory}\n" +
-                            "Total Dumped Capacity: {totalDumpedCapacity}\n",
-                    gerPowerHardware(),
-                    getHeavyHardware(),
-                    countOfExpressSoftwareComponents(hardwareComponent),
-                    countOfLightSoftwareComponents(hardwareComponent));
+            total += hardwareComponent.getCapacityTaken();
         }
+
+        return total;
+    }
+
+    private long totalDumpedMemory() {
+        long total = 0;
+        for (HardwareComponent hardwareComponent : dumpComponents.values()) {
+            total += hardwareComponent.getMemoryTaken();
+        }
+
+        return total;
+    }
+
+    private long countOfLightSoftwareComponents() {
+        long total = 0;
+        for (HardwareComponent hardwareComponent : dumpComponents.values()) {
+            total += hardwareComponent.getComponents()
+                    .stream()
+                    .filter(c -> c.getType().equals("Light"))
+                    .count();
+        }
+
+        return total;
+    }
+
+    private long countOfExpressSoftwareComponents() {
+        long total = 0;
+        for (HardwareComponent hardwareComponent : dumpComponents.values()) {
+            total += hardwareComponent.getComponents()
+                    .stream()
+                    .filter(c -> c.getType().equals("Express"))
+                    .count();
+        }
+
+        return total;
     }
 
     private long getHeavyHardware() {

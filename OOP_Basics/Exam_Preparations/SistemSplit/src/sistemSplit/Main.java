@@ -22,7 +22,7 @@ public class Main {
             String[] commandArgs = input.split("\\(|\\)");
             String command = commandArgs[0];
 
-            if (!command.equals("Analyze")) {
+            if (!command.equals("Analyze") && !command.equals("DumpAnalyze")) {
                 String[] paramArgs = commandArgs[1].split(", ");
                 switch (command) {
                     case "RegisterPowerHardware":
@@ -56,7 +56,21 @@ public class Main {
                         String softNameR = paramArgs[1];
                         system.releaseSoftwareComponent(hardNameR, softNameR);
                         break;
+                    case "Dump":
+                        String dumpHard = paramArgs[0];
+                        system.dump(dumpHard);
+                        break;
+                    case "Restore":
+                        String dumpHardR = paramArgs[0];
+                        system.restore(dumpHardR);
+                        break;
+                    case "Destroy":
+                        String dumpHardD = paramArgs[0];
+                        system.destroy(dumpHardD);
+                        break;
                 }
+            } else if(command.equals("DumpAnalyze")){
+                system.dumpAnalyze();
             } else {
                 system.analyze();
             }
