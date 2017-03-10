@@ -20,6 +20,15 @@ public class AdoptionCenter extends Center{
         center.registerAll(animals);
     }
 
+    public void sendForCastration(CastrationCenter center){
+        List<Animal> animals = super.getAnimals()
+                .stream().filter(a -> !a.isCastrated())
+                .collect(Collectors.toList());
+
+        super.remove(animals);
+        center.registerAll(animals);
+    }
+
     public List<Animal> adopt(){
         List<Animal> animals = super.getAnimals()
                 .stream().filter(Animal::isCleansed)

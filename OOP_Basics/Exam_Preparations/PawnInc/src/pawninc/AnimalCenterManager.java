@@ -4,6 +4,7 @@ import pawninc.Animals.Animal;
 import pawninc.Animals.Cat;
 import pawninc.Animals.Dog;
 import pawninc.Centers.AdoptionCenter;
+import pawninc.Centers.CastrationCenter;
 import pawninc.Centers.CleansingCenter;
 
 import java.text.Collator;
@@ -16,14 +17,18 @@ public class AnimalCenterManager implements iCenterManager {
 
     private HashMap<String, AdoptionCenter> adoptionCenters;
     private HashMap<String, CleansingCenter> cleansingCenters;
+    private HashMap<String, CastrationCenter> castrationCenter;
     private List<Animal> cleansedAnimals;
+    private List<Animal> castratedAnimals;
     private List<Animal> adoptedAnimals;
 
     public AnimalCenterManager() {
         this.adoptionCenters = new HashMap<>();
         this.cleansingCenters = new HashMap<>();
+        this.castrationCenter = new HashMap<>();
         this.cleansedAnimals = new ArrayList<>();
         this.adoptedAnimals = new ArrayList<>();
+        this.castratedAnimals = new ArrayList<>();
     }
 
     @Override
@@ -36,6 +41,11 @@ public class AnimalCenterManager implements iCenterManager {
     public void registerAdoptionCenter(String name) {
         AdoptionCenter adoptionCenter = new AdoptionCenter(name);
         this.adoptionCenters.putIfAbsent(name, adoptionCenter);
+    }
+
+    public void registerCastrationCenter(String name) {
+        CastrationCenter castrationCenter = new CastrationCenter(name);
+        this.castrationCenter.putIfAbsent(name, castrationCenter);
     }
 
     @Override
@@ -56,6 +66,11 @@ public class AnimalCenterManager implements iCenterManager {
         this.adoptionCenters.get(adoptionCenterName).sendForCleansing(cleansingCenter);
     }
 
+    public void sendForCastration(String adoptionCenterName, String castrationCenterName) {
+        CastrationCenter castrationCenter = this.castrationCenter.get(castrationCenterName);
+        this.adoptionCenters.get(adoptionCenterName).sendForCastration(castrationCenter);
+    }
+
     @Override
     public void cleanse(String cleansingCenterName) {
         List<Animal> cleansedAnimals = this.cleansingCenters.get(cleansingCenterName).cleanse();
@@ -64,6 +79,14 @@ public class AnimalCenterManager implements iCenterManager {
         }
 
         this.cleansedAnimals.addAll(cleansedAnimals);
+    }
+
+    public void castrate(String castrationCenterName) {
+        List<Animal> castratedAnimals = this.castrationCenter.get(castrationCenterName).castrate();
+        for (Animal castratedAnimal : castratedAnimals) {
+            this.adoptionCenters.get(castratedAnimal.getAdoptionCenter()).register(castratedAnimal);
+            this.castratedAnimals.add(castratedAnimal);
+        }
     }
 
     @Override
@@ -120,5 +143,13 @@ public class AnimalCenterManager implements iCenterManager {
         sb.append(String.format("Animals Awaiting Cleansing: %d%n", getAwaitingCleansingCount()));
 
         System.out.println(sb.toString());
+    }
+
+    public void printCastrationStatistics(){
+        System.out.printf("Paw Inc. Regular Castration Statistics\n" +
+                "Castration Centers: %s\n" +
+                "Castrated Animals: %s\n",
+                this.castrationCenter.size(),
+                getAdoptedAnimals(this.castratedAnimals));
     }
 }

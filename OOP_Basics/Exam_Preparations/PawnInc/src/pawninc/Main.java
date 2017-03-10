@@ -26,6 +26,9 @@ public class Main {
                 case "RegisterAdoptionCenter":
                     animalCenterManager.registerAdoptionCenter(commandArgs[1]);
                     break;
+                case "RegisterCastrationCenter":
+                    animalCenterManager.registerCastrationCenter(commandArgs[1]);
+                    break;
                 case "RegisterDog":
                     String dogName = commandArgs[1];
                     int dogAge = Integer.parseInt(commandArgs[2]);
@@ -43,11 +46,20 @@ public class Main {
                 case "SendForCleansing":
                     animalCenterManager.sendForCleansing(commandArgs[1], commandArgs[2]);
                     break;
+                case "SendForCastration":
+                    animalCenterManager.sendForCastration(commandArgs[1], commandArgs[2]);
+                    break;
                 case "Cleanse":
                     animalCenterManager.cleanse(commandArgs[1]);
                     break;
+                case "Castrate":
+                    animalCenterManager.castrate(commandArgs[1]);
+                    break;
                 case "Adopt":
                     animalCenterManager.adopt(commandArgs[1]);
+                    break;
+                case "CastrationStatistics":
+                    animalCenterManager.printCastrationStatistics();
                     break;
             }
         }

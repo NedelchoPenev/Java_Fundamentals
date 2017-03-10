@@ -5,6 +5,7 @@ public abstract class Animal {
     private String name;
     private int age;
     private boolean isCleansed;
+    private boolean isCastrated;
     private String adoptionCenter;
 
     protected Animal(String name, int age){
@@ -17,6 +18,7 @@ public abstract class Animal {
         this.setName(name);
         this.setAge(age);
         this.isCleansed = false;
+        this.isCastrated = false;
         this.setAdoptionCenter(adoptionCenter);
     }
 
@@ -46,6 +48,10 @@ public abstract class Animal {
         return isCleansed;
     }
 
+    public boolean isCastrated() {
+        return isCastrated;
+    }
+
     private void setCleansed(boolean cleansed) {
         isCleansed = cleansed;
     }
@@ -60,5 +66,9 @@ public abstract class Animal {
 
     public void cleanse(){
         this.isCleansed = true;
+    }
+
+    public void castrate(){
+        this.isCastrated = true;
     }
 }
