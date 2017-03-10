@@ -9,14 +9,12 @@ public class HeavyHardwareComponent extends HardwareComponent {
     }
 
     @Override
-    public void setCapacity(int capacity) {
-        int heavyHarCap = capacity * 2;
-        super.setCapacity(heavyHarCap);
+    public int getCapacity() {
+        return super.getCapacity() * 2;
     }
 
     @Override
-    public void setMemory(int memory) {
-        int heavyHarMem = memory - (memory / 4);
-        super.setMemory(heavyHarMem);
+    public int getMemory() {
+        return super.getMemory() - (super.getMemory() / 4);
     }
 }

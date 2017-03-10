@@ -17,6 +17,16 @@ public abstract class HardwareComponent extends Component {
         this.components.add(softwareComponent);
     }
 
+    @Override
+    public int getCapacity() {
+        return super.getCapacity();
+    }
+
+    @Override
+    public int getMemory() {
+        return super.getMemory();
+    }
+
     public int getCapacityTaken(){
         int capacityTaken = 0;
         for (SoftwareComponent component : components) {

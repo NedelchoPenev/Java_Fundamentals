@@ -74,7 +74,7 @@ public class AnimalCenterManager implements iCenterManager {
     }
 
     private String getAdoptedAnimals(List<Animal> animals){
-        if (this.adoptedAnimals.isEmpty()){
+        if (animals.isEmpty()){
             return "None";
         }
 

@@ -9,14 +9,12 @@ public class PowerHardwareComponent extends HardwareComponent {
     }
 
     @Override
-    public void setCapacity(int capacity) {
-        int powerHardCap = capacity - ((capacity * 3) / 4);
-        super.setCapacity(powerHardCap);
+    public int getCapacity() {
+        return super.getCapacity() - ((super.getCapacity() * 3) / 4);
     }
 
     @Override
-    public void setMemory(int memory) {
-        int powerHardMem = memory + ((memory * 3) / 4);
-        super.setMemory(powerHardMem);
+    public int getMemory() {
+        return super.getMemory() + ((super.getMemory() * 3) / 4);
     }
 }
