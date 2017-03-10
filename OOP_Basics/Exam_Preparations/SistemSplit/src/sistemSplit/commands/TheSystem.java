@@ -74,12 +74,12 @@ public class TheSystem implements iTheSystem {
     }
 
     @Override
-    public void analyze() {
-        System.out.printf("System Analysis\n" +
+    public String analyze() {
+        return String.format("System Analysis\n" +
                         "Hardware Components: %d\n" +
                         "Software Components: %d\n" +
                         "Total Operational Memory: %d / %d\n" +
-                        "Total Capacity Taken: %d / %d\n",
+                        "Total Capacity Taken: %d / %d",
                 this.hardwareComponents.size(),
                 getSoftwareComponents(),
                 totalOperationalMemoryInUse(),
@@ -134,9 +134,10 @@ public class TheSystem implements iTheSystem {
     }
 
     @Override
-    public void split() {
+    public String split() {
+        StringBuilder sb = new StringBuilder();
         for (HardwareComponent hardwareComponent : hardwareComponents.values()) {
-            System.out.printf("Hardware Component - %s\n" +
+           sb.append(String.format("Hardware Component - %s\n" +
                             "Express Software Components - %d\n" +
                             "Light Software Components - %d\n" +
                             "Memory Usage: %d / %d\n" +
@@ -151,8 +152,10 @@ public class TheSystem implements iTheSystem {
                     hardwareComponent.getCapacityTaken(),
                     hardwareComponent.getCapacity(),
                     hardwareComponent.getType(),
-                    getComponents(hardwareComponent.getComponents()));
+                    getComponents(hardwareComponent.getComponents())));
         }
+
+        return sb.toString();
     }
 
     private String getComponents(List<SoftwareComponent> components) {
@@ -201,14 +204,14 @@ public class TheSystem implements iTheSystem {
         }
     }
 
-    public void dumpAnalyze() {
-        System.out.printf("Dump Analysis\n" +
+    public String dumpAnalyze() {
+        return String.format("Dump Analysis\n" +
                         "Power Hardware Components: %s\n" +
                         "Heavy Hardware Components: %s\n" +
                         "Express Software Components: %d\n" +
                         "Light Software Components: %d\n" +
                         "Total Dumped Memory: %s\n" +
-                        "Total Dumped Capacity: %s\n",
+                        "Total Dumped Capacity: %s",
                 gerPowerHardware(),
                 getHeavyHardware(),
                 countOfExpressSoftwareComponents(),

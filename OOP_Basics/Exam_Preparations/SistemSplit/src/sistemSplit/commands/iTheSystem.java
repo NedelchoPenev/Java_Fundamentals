@@ -7,7 +7,7 @@ public interface iTheSystem {
 	void registerExpressSoftware(String hardwareComponentName, String name, int capacity, int memory);
 	void registerLightSoftware(String hardwareComponentName, String name, int capacity, int memory);
 	void releaseSoftwareComponent(String hardwareComponentName, String softwareComponentName);
-	void analyze();
-	void split();
+	String analyze();
+	String split();
 
 }

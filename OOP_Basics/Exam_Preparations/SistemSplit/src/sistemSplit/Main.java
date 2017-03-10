@@ -15,7 +15,7 @@ public class Main {
         while (true) {
             String input = console.readLine();
             if ("System Split".equals(input)) {
-                system.split();
+                System.out.println(system.split());
                 break;
             }
 
@@ -70,9 +70,9 @@ public class Main {
                         break;
                 }
             } else if(command.equals("DumpAnalyze")){
-                system.dumpAnalyze();
+                System.out.println(system.dumpAnalyze());
             } else {
-                system.analyze();
+                System.out.println(system.analyze());
             }
         }
     }
