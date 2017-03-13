@@ -60,44 +60,48 @@ public class CarManager {
     }
 
     public void participate(int carId, int raceId) {
-        if (!this.cars.get(carId).isInGarage()) {
+        if (!this.cars.get(carId).isInGarage() && this.races.containsKey(raceId)) {
             this.races.get(raceId).addCar(this.cars.get(carId));
         }
     }
 
     public String start(int id) {
-        this.races.get(id).race();
         StringBuilder sb = new StringBuilder();
-        if (this.races.get(id).getCars().isEmpty()) {
-            return "Cannot start the race with zero participants.";
-        } else {
-            int prizeMoney = 0;
-            sb.append(String.format("%s - %d",
-                    this.races.get(id).getRoute(),
-                    this.races.get(id).getLength())).append(System.lineSeparator());
+        if (this.races.containsKey(id)) {
+            this.races.get(id).race();
+            if (this.races.get(id).getCars().isEmpty()) {
+                this.races.remove(id);
+                sb.append("Cannot start the race with zero participants.")
+                        .append(System.lineSeparator());
+            } else {
+                int prizeMoney;
+                sb.append(String.format("%s - %d%n",
+                        this.races.get(id).getRoute(),
+                        this.races.get(id).getLength()));
 
-            int place = 1;
-            Map<Car, Integer> winners = this.races.get(id).getRaceWinners();
-            for (Car car : winners.keySet()) {
-                if (place == 1){
-                    prizeMoney = (this.races.get(id).getPrizePool() * 50) / 100;
-                } else if (place == 2){
-                    prizeMoney = (this.races.get(id).getPrizePool() * 30) / 100;
-                } else {
-                    prizeMoney = (this.races.get(id).getPrizePool() * 20) / 100;
+                int place = 1;
+                Map<Car, Integer> winners = this.races.get(id).getRaceWinners();
+                for (Car car : winners.keySet()) {
+                    if (place == 1) {
+                        prizeMoney = (this.races.get(id).getPrizePool() * 50) / 100;
+                    } else if (place == 2) {
+                        prizeMoney = (this.races.get(id).getPrizePool() * 30) / 100;
+                    } else {
+                        prizeMoney = (this.races.get(id).getPrizePool() * 20) / 100;
+                    }
+                    sb.append(String.format("%d. %s %s %dPP - $%d%n",
+                            place,
+                            car.getBrand(),
+                            car.getModel(),
+                            winners.get(car),
+                            prizeMoney));
+                    place++;
                 }
-                sb.append(String.format("%d. %s %s %dPP - $%d%n",
-                        place,
-                        car.getBrand(),
-                        car.getModel(),
-                        winners.get(car),
-                        prizeMoney));
-                place++;
+
+                this.races.get(id).finishRace();
+                this.races.remove(id);
             }
         }
-
-        this.races.get(id).finishRace();
-        this.races.remove(id);
         return sb.toString();
     }
 
