@@ -51,7 +51,7 @@ public class CarManager {
             case "Drag":
                 race = new DragRace(length, route, prizePool);
                 break;
-            default:
+            case "Drift":
                 race = new DriftRace(length, route, prizePool);
                 break;
         }
@@ -70,7 +70,6 @@ public class CarManager {
         if (this.races.containsKey(id)) {
             this.races.get(id).race();
             if (this.races.get(id).getCars().isEmpty()) {
-                this.races.remove(id);
                 sb.append("Cannot start the race with zero participants.")
                         .append(System.lineSeparator());
             } else {
@@ -97,10 +96,10 @@ public class CarManager {
                             prizeMoney));
                     place++;
                 }
-
-                this.races.get(id).finishRace();
-                this.races.remove(id);
             }
+
+            this.races.get(id).finishRace();
+            this.races.remove(id);
         }
         return sb.toString();
     }
