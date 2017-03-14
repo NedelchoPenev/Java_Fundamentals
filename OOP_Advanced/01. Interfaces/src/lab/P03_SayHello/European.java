@@ -1,16 +1,16 @@
-package Lab.P04_SayHelloExtended;
+package lab.P03_SayHello;
 
-public class BasePerson implements Person {
+public class European implements Person {
 
     private String name;
 
-    protected BasePerson(String name) {
+    public European(String name) {
         this.setName(name);
     }
 
     @Override
     public String getName() {
-        return this.name;
+        return this.getName();
     }
 
     private void setName(String name) {

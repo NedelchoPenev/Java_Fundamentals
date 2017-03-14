@@ -1,4 +1,4 @@
-package Lab.P03_SayHello;
+package lab.P04_SayHelloExtended;
 
 public interface Person {
 

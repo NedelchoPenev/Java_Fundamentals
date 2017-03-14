@@ -1,4 +1,4 @@
-package Lab.P04_SayHelloExtended;
+package lab.P04_SayHelloExtended;
 
 public class European extends BasePerson implements Person {
 

@@ -1,4 +1,4 @@
-package Lab.P02_Car_Shop_Extend;
+package lab.P02_Car_Shop_Extend;
 
 public interface Rentable extends Car {
 

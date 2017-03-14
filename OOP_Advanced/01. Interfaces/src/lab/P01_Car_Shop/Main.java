@@ -1,4 +1,4 @@
-package Lab.P01_Car_Shop;
+package lab.P01_Car_Shop;
 
 public class Main {
 

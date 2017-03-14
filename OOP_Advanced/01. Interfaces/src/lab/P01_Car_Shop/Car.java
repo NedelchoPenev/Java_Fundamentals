@@ -1,9 +1,9 @@
-package Lab.P02_Car_Shop_Extend;
+package lab.P01_Car_Shop;
 
 public interface Car{
 
     int TIRES = 4;
     String getModel();
     String getColor();
-    Integer getHorsePower();
+    int getHorsePower();
 }

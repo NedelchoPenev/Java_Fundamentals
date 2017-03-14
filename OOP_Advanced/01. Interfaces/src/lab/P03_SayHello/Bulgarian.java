@@ -1,21 +1,21 @@
-package Lab.P03_SayHello;
+package lab.P03_SayHello;
 
-public class Chinese implements Person {
+public class Bulgarian implements Person {
 
     private String name;
 
-    public Chinese(String name) {
+    public Bulgarian(String name) {
         this.setName(name);
     }
 
     @Override
     public String getName() {
-        return this.name;
+        return this.getName();
     }
 
     @Override
     public String sayHello() {
-        return "Djydjybydjy";
+        return "Здравей";
     }
 
     private void setName(String name) {

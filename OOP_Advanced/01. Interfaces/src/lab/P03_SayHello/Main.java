@@ -1,4 +1,4 @@
-package Lab.P03_SayHello;
+package lab.P03_SayHello;
 
 import java.util.ArrayList;
 import java.util.List;
