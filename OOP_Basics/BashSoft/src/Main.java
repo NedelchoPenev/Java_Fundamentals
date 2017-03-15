@@ -14,14 +14,11 @@ public class Main {
         Tester tester = new Tester();
         DownloadManager downloadManager = new DownloadManager();
         IOManager ioManager = new IOManager();
-
         RepositorySorter sorter = new RepositorySorter();
         RepositoryFilter filter = new RepositoryFilter();
         StudentsRepository repository = new StudentsRepository(filter, sorter);
-
-        CommandInterpreter currentInterpreter =
-                new CommandInterpreter(tester, repository, downloadManager, ioManager);
-
+        CommandInterpreter currentInterpreter = new CommandInterpreter(
+                tester, repository, downloadManager, ioManager);
         InputReader reader = new InputReader(currentInterpreter);
 
         try {

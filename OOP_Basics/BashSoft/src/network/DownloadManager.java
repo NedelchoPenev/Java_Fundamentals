@@ -1,8 +1,9 @@
 package network;
 
+import exeptions.InvalidPathException;
 import io.OutputWriter;
-import staticData.ExceptionMessages;
 import staticData.SessionData;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class DownloadManager {
 
             url = new URL(fileUrl);
             rbc = Channels.newChannel(url.openStream());
-            String fileName = this.extractNameOfFile(url.toString());
+            String fileName = extractNameOfFile(url.toString());
             File file = new File(SessionData.currentPath + "/" + fileName);
             fos = new FileOutputStream(file);
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
@@ -33,6 +34,8 @@ public class DownloadManager {
             if (Thread.currentThread().getName().equals("main")) {
                 OutputWriter.writeMessageOnNewLine("Download complete.");
             }
+        } catch (MalformedURLException e) {
+            OutputWriter.displayException(e.getMessage());
         } catch (IOException e) {
             OutputWriter.displayException(e.getMessage());
         } finally {
@@ -63,10 +66,11 @@ public class DownloadManager {
         thread.start();
     }
 
-    private String extractNameOfFile(String fileUrl) throws MalformedURLException {
+    private String extractNameOfFile(String fileUrl)
+            throws MalformedURLException {
         int indexOfLastSlash = fileUrl.lastIndexOf('/');
         if (indexOfLastSlash == -1) {
-            throw new MalformedURLException(ExceptionMessages.INVALID_PATH);
+            throw new InvalidPathException();
         }
 
         return fileUrl.substring(indexOfLastSlash + 1);

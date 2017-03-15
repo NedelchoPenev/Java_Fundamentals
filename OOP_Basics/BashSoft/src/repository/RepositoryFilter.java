@@ -13,24 +13,23 @@ public class RepositoryFilter {
             String filterType,
             Integer numberOfStudents) {
 
-        Predicate<Double> filter = this.createFilter(filterType);
+        Predicate<Double> filter = createFilter(filterType);
 
         if (filter == null) {
-            throw new NullPointerException(ExceptionMessages.INVALID_FILTER);
-//            OutputWriter.displayException(ExceptionMessages.INVALID_FILTER);
-//            return;
+            throw new IllegalArgumentException(ExceptionMessages.INVALID_FILTER);
         }
 
         int studentsCount = 0;
-        for (String student : studentsWithMarks.keySet()) {
+        for (String studentName : studentsWithMarks.keySet()) {
             if (studentsCount >= numberOfStudents) {
                 break;
             }
 
-            Double mark = studentsWithMarks.get(student);
+            double mark = studentsWithMarks.get(studentName);
 
             if (filter.test(mark)) {
-                OutputWriter.printStudent(student, mark);
+                OutputWriter.writeMessageOnNewLine(String.format(
+                        "%s - %f", studentName, mark));
                 studentsCount++;
             }
         }

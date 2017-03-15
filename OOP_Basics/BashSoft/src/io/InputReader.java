@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 
 public class InputReader {
 
-    private final String END_COMMAND = "quit";
+    private static final String END_COMMAND = "quit";
 
     private CommandInterpreter interpreter;
 
@@ -21,7 +21,7 @@ public class InputReader {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String input = reader.readLine().trim();
 
-        while (!input.equals(this.END_COMMAND)) {
+        while (!input.equals(END_COMMAND)) {
             this.interpreter.interpretCommand(input);
             OutputWriter.writeMessage(String.format("%s > ", SessionData.currentPath));
 

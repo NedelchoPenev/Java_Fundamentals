@@ -1,8 +1,10 @@
 package modules;
 
+import exeptions.DuplicateEntryInStructureException;
+import exeptions.InvalidStringException;
+import exeptions.KeyNotFoundException;
 import staticData.ExceptionMessages;
 
-import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -16,8 +18,8 @@ public class Student {
 
     public Student(String userName) {
         this.setUserName(userName);
-        this.setEnrolledCourses(new LinkedHashMap<>());
-        this.setMarksByCourseName(new LinkedHashMap<>());
+        this.enrolledCourses = new LinkedHashMap<>();
+        this.marksByCourseName = new LinkedHashMap<>();
     }
 
     public String getUserName() {
@@ -25,8 +27,8 @@ public class Student {
     }
 
     private void setUserName(String userName) {
-        if (userName == null || userName.trim().equals("")){
-            throw new IllegalArgumentException(ExceptionMessages.NULL_OR_EMPTY_VALUE);
+        if (userName == null || userName.equals("")) {
+            throw new InvalidStringException();
         }
         this.userName = userName;
     }
@@ -35,46 +37,31 @@ public class Student {
         return Collections.unmodifiableMap(this.enrolledCourses);
     }
 
-    private void setEnrolledCourses(LinkedHashMap<String, Course> enrolledCourses) {
-        this.enrolledCourses = enrolledCourses;
-    }
-
     public Map<String, Double> getMarksByCourseName() {
-        return Collections.unmodifiableMap(this.marksByCourseName);
-    }
-
-    private void setMarksByCourseName(LinkedHashMap<String, Double> marksByCourseName) {
-        this.marksByCourseName = marksByCourseName;
+        return Collections.unmodifiableMap(marksByCourseName);
     }
 
     public void enrollInCourse(Course course) {
-        if (this.getEnrolledCourses().containsKey(course)) {
-            throw new KeyAlreadyExistsException(String.format(ExceptionMessages.STUDENT_ALREADY_ENROLLED_IN_GIVEN_COURSE,
-                    this.getUserName(), course.getName()));
-//            OutputWriter.displayException(String.format(
-//                    ExceptionMessages.STUDENT_ALREADY_ENROLLED_IN_GIVEN_COURSE,
-//                    this.getUserName(), course.getName()));
-//            return;
+        if (this.enrolledCourses.containsKey(course.getName())) {
+            throw new DuplicateEntryInStructureException(
+                    this.userName, course.getName());
         }
 
-        this.getEnrolledCourses().put(course.getName(), course);
+        this.enrolledCourses.put(course.getName(), course);
     }
 
-    public void setMarkOnCourse(String courseName, int... scores) {
-        if (! this.getEnrolledCourses().containsKey(courseName)) {
-            throw new IllegalArgumentException(ExceptionMessages.NOT_ENROLLED_IN_COURSE);
-//            OutputWriter.displayException(ExceptionMessages.NOT_ENROLLED_IN_COURSE);
-//            return;
+    public void setMarkOnCourse(String courseName, int[] scores) {
+        if (!this.enrolledCourses.containsKey(courseName)) {
+            throw new KeyNotFoundException();
         }
 
         if (scores.length > Course.NUMBER_OF_TASKS_ON_EXAM) {
-            throw new IllegalArgumentException(ExceptionMessages.INVALID_NUMBER_OF_SCORES);
-//            OutputWriter.displayException(ExceptionMessages.INVALID_NUMBER_OF_SCORES);
-//            return;
+            throw new IllegalArgumentException(
+                    ExceptionMessages.INVALID_NUMBER_OF_SCORES);
         }
 
-        double mark = this.calculateMark(scores);
-        this.getMarksByCourseName().put(courseName, mark);
+        double mark = calculateMark(scores);
+        this.marksByCourseName.put(courseName, mark);
     }
 
     private double calculateMark(int[] scores) {
@@ -82,5 +69,11 @@ public class Student {
                 (double) (Course.NUMBER_OF_TASKS_ON_EXAM * Course.MAX_SCORE_ON_EXAM_TASK);
         double mark = percentageOfSolvedExam * 4 + 2;
         return mark;
+    }
+
+    public String getMarkForCourse(String courseName) {
+        String output = String.format("%s - %f",
+                this.userName, marksByCourseName.get(courseName));
+        return output;
     }
 }
