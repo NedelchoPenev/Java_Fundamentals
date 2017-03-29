@@ -12,7 +12,7 @@ public class Pet {
         this.setKind(kind);
     }
 
-    private String getName() {
+    public String getName() {
         return name;
     }
 
