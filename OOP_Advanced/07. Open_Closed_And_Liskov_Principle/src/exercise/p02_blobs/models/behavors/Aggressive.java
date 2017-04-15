@@ -1,6 +1,6 @@
 package exercise.p02_blobs.models.behavors;
 
-import exercise.p02_blobs.models.Blob;
+import exercise.p02_blobs.interfaces.Creature;
 
 public class Aggressive extends AbstractBehavior {
 
@@ -13,13 +13,23 @@ public class Aggressive extends AbstractBehavior {
         super();
     }
 
-    public void trigger(Blob source) {
+    public boolean toDelayRecurrentEffect() {
+        return super.toDelayRecurrentEffect;
+    }
+
+    public void setToDelayRecurrentEffect(boolean toDelayRecurrentEffect){
+        super.toDelayRecurrentEffect = toDelayRecurrentEffect;
+    }
+
+    @Override
+    public void trigger(Creature source) {
         this.sourceInitialDamage = source.getDamage();
         super.setIsTriggered(true);
         this.applyTriggerEffect(source);
     }
 
-    public void applyRecurrentEffect(Blob source) {
+    @Override
+    public void applyRecurrentEffect(Creature source) {
         if (super.toDelayRecurrentEffect()) {
             super.setToDelayRecurrentEffect(false);
         } else {
@@ -31,15 +41,7 @@ public class Aggressive extends AbstractBehavior {
         }
     }
 
-    public boolean toDelayRecurrentEffect() {
-        return super.toDelayRecurrentEffect;
-    }
-
-    public void setToDelayRecurrentEffect(boolean toDelayRecurrentEffect){
-        super.toDelayRecurrentEffect = toDelayRecurrentEffect;
-    }
-
-    private void applyTriggerEffect(Blob source) {
+    private void applyTriggerEffect(Creature source) {
         source.setDamage(source.getDamage() * AGGRESSIVE_DAMAGE_MULTIPLY);
     }
 }

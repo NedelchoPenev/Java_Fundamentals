@@ -1,7 +1,6 @@
 package exercise.p02_blobs.models.behavors;
 
 import exercise.p02_blobs.interfaces.Behavior;
-import exercise.p02_blobs.models.Blob;
 
 public abstract class AbstractBehavior implements Behavior {
 
@@ -9,7 +8,6 @@ public abstract class AbstractBehavior implements Behavior {
     protected boolean toDelayRecurrentEffect;
 
     public AbstractBehavior() {
-        this.toDelayRecurrentEffect = true;
     }
 
     public boolean isTriggered() {
@@ -27,8 +25,4 @@ public abstract class AbstractBehavior implements Behavior {
     public void setToDelayRecurrentEffect(boolean toDelayRecurrentEffect){
         this.toDelayRecurrentEffect = toDelayRecurrentEffect;
     }
-
-    public abstract void trigger(Blob source);
-
-    public abstract void applyRecurrentEffect(Blob source);
 }

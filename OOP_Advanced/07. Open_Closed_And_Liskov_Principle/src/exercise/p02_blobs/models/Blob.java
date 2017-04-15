@@ -1,42 +1,50 @@
 package exercise.p02_blobs.models;
 
-import exercise.p02_blobs.models.attacks.AbstractAttack;
-import exercise.p02_blobs.models.attacks.PutridFart;
-import exercise.p02_blobs.models.behavors.AbstractBehavior;
-import exercise.p02_blobs.models.behavors.Aggressive;
+import exercise.p02_blobs.interfaces.*;
 
-public class Blob {
+import java.util.ArrayList;
+import java.util.Collection;
+
+public class Blob implements Creature{
 
     private String name;
     private int currentHealth;
     private int damage;
-    private AbstractBehavior behavior;
-    private AbstractAttack attack;
+    private Behavior behavior;
+    private Attack attack;
     private int triggerCount;
+    private Collection<Listener> listeners;
 
     private int initialHealth;
-    private int initialDamage;
 
-    public Blob(String name, int health, int damage, AbstractBehavior behavior, AbstractAttack attack) {
+    public Blob(String name, int health, int damage, Behavior behavior, Attack attack) {
         this.name = name;
         this.currentHealth = health;
         this.damage = damage;
         this.behavior = behavior;
         this.attack = attack;
+        this.listeners = new ArrayList<>();
 
         this.initialHealth = health;
-        this.initialDamage = damage;
     }
 
+    @Override
     public int getHealth() {
         return this.currentHealth;
     }
 
+    @Override
     public void setHealth(int health) {
         this.currentHealth = health;
 
         if (this.currentHealth < 0) {
             this.currentHealth = 0;
+
+            if (this.behavior.isTriggered()) {
+                String message = String.format("Blob %s was killed", this.getName());
+                Event event = new BlobEvent(this, message);
+                this.fireEvent(event);
+            }
         }
 
         if (this.currentHealth <= this.initialHealth / 2 && !this.behavior.isTriggered()) {
@@ -44,6 +52,7 @@ public class Blob {
         }
     }
 
+    @Override
     public int getDamage() {
         return this.damage;
     }
@@ -52,42 +61,42 @@ public class Blob {
         this.damage = currentDamage;
     }
 
-    public void attack(Blob target) {
-        if (this.attack instanceof PutridFart) {
-            this.attackAffectTarget(this, target);
-        }
+    @Override
+    public void attack(Creature target) {
+        this.attack.execute(this, target);
     }
 
+    @Override
     public void respond(int damage) {
         int currentHealth = this.getHealth();
         currentHealth -= damage;
         this.setHealth(currentHealth);
     }
 
+    @Override
     public void triggerBehavior() {
-        if (this.behavior instanceof Aggressive) {
-            if (this.behavior.isTriggered()) {
-                ((Aggressive) this.behavior).setIsTriggered(true);
-                this.applyAgressiveTriggerEffect();
-            }
-        }
+        String message = String.format("Blob %s toggled %sBehavior", this.getName(), this.behavior.getClass().getSimpleName());
+        Event event = new BlobEvent(this, message);
+        this.fireEvent(event);
+        this.behavior.trigger(this);
     }
 
-    public AbstractBehavior getBehavior() {
+    @Override
+    public Behavior getBehavior() {
         return this.behavior;
     }
 
+    @Override
     public String getName() {
         return this.name;
     }
 
+    @Override
     public void update() {
         if (this.behavior.isTriggered()) {
-            if (this.behavior instanceof Aggressive) {
-                if (this.behavior.isTriggered()) {
-                    ((Aggressive) this.behavior).setIsTriggered(true);
-                    this.applyAgressiveRecurrentEffect();
-                }
+            this.triggerCount++;
+            if (this.triggerCount > 1) {
+                this.behavior.applyRecurrentEffect(this);
             }
         }
     }
@@ -95,32 +104,22 @@ public class Blob {
     @Override
     public String toString() {
         if (this.getHealth() <= 0) {
-            return String.format("IBlob %s KILLED", this.getName());
+            return String.format("Blob %s KILLED", this.getName());
         }
 
-        return String.format("IBlob %s: %s HP, %s Damage", this.getName(), this.getHealth(), this.getDamage());
+        return String.format("Blob %s: %s HP, %s Damage", this.getName(), this.getHealth(), this.getDamage());
     }
 
-    private void attackAffectSource(Blob source) {
-        source.setHealth(source.getHealth() - source.getHealth() / 2);
+    @Override
+    public Collection<Listener> getListeners() {
+        return this.listeners;
     }
 
-    private void attackAffectTarget(Blob source, Blob target) {
-        target.respond(source.getDamage() * 2);
-    }
-
-    private void applyAgressiveTriggerEffect() {
-        this.setDamage(this.getDamage() * 2);
-    }
-
-    private void applyAgressiveRecurrentEffect() {
-        if (((Aggressive)this.behavior).toDelayRecurrentEffect()) {
-            ((Aggressive)this.behavior).setToDelayRecurrentEffect(false);
-        } else {
-            this.setDamage(this.getDamage() - 5);
-
-            if (this.getDamage() <= this.initialHealth) {
-                this.setDamage(this.initialDamage);
+    @Override
+    public void fireEvent(Event event) {
+        for (Listener listener : this.getListeners()) {
+            if (listener != null) {
+                listener.update(this, event);
             }
         }
     }
