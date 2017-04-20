@@ -75,10 +75,7 @@ public class RaceImpl implements Race {
     }
 
     @Override
-    public Map<Sailable, Double> getWinners() {
-        return this.registeredBoats.entrySet().stream()
-                .sorted(Comparator.comparing(Map.Entry::getValue))
-                .limit(3).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (e1, e2) -> e1, LinkedHashMap::new));
+    public Map<Sailable, Double> getParticipants() {
+        return Collections.unmodifiableMap(this.registeredBoats);
     }
 }

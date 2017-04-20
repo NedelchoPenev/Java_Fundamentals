@@ -1,23 +1,24 @@
 package exercise.controllers;
 
+import exercise.contracts.IBoatSimulatorController;
+import exercise.contracts.Race;
+import exercise.contracts.Sailable;
+import exercise.database.BoatSimulatorDatabase;
+import exercise.enumeration.EngineType;
+import exercise.exeptions.*;
 import exercise.models.boats.PowerBoat;
 import exercise.models.boats.RowBoat;
 import exercise.models.boats.SailBoat;
 import exercise.models.boats.Yacht;
 import exercise.models.engines.BaseEngine;
-import exercise.models.race.RaceImpl;
-import exercise.utility.Constants;
-import exercise.contracts.IBoatSimulatorController;
-import exercise.contracts.Sailable;
-import exercise.contracts.Race;
-import exercise.database.BoatSimulatorDatabase;
-import exercise.enumeration.EngineType;
-import exercise.exeptions.*;
 import exercise.models.engines.JetEngine;
 import exercise.models.engines.SterndriveEngine;
+import exercise.models.race.RaceImpl;
+import exercise.utility.Constants;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BoatSimulatorController implements IBoatSimulatorController {
 
@@ -66,13 +67,13 @@ public class BoatSimulatorController implements IBoatSimulatorController {
     public String createRowBoat(String model, int weight, int oars) throws DuplicateModelException {
         Sailable boat = new RowBoat(model, weight, oars);
         this.database.getBoats().add(boat);
-        return String.format("Row boat with model %s registered successfully.", model);
+        return "Row boat with model " + boat.getModel() + " registered successfully.";
     }
 
     public String createSailBoat(String model, int weight, int sailEfficiency) throws DuplicateModelException {
         Sailable boat = new SailBoat(model, weight, sailEfficiency);
         this.database.getBoats().add(boat);
-        return String.format("Sail boat with model %s registered successfully.", model);
+        return "Sail boat with model " + boat.getModel() + " registered successfully.";
     }
 
     public String createPowerBoat(String model, int weight, String firstEngineModel, String secondEngineModel) throws NonExistantModelException, DuplicateModelException {
@@ -81,14 +82,14 @@ public class BoatSimulatorController implements IBoatSimulatorController {
         engines.add(this.database.getEngines().getItem(secondEngineModel));
         Sailable boat = new PowerBoat(model, weight, engines);
         this.database.getBoats().add(boat);
-        return String.format("Power boat with model %s registered successfully.", model);
+        return "Power boat with model " + boat.getModel() + " registered successfully.";
     }
 
     public String createYacht(String model, int weight, String engineModel, int cargoWeight) throws NonExistantModelException, DuplicateModelException {
         BaseEngine engine = this.database.getEngines().getItem(engineModel);
         Sailable boat = new Yacht(model, weight, cargoWeight, engine);
         this.database.getBoats().add(boat);
-        return String.format("Yacht with model %s registered successfully.", model);
+        return "Yacht with model " + boat.getModel() + " registered successfully.";
     }
 
     public String openRace(int distance, int windSpeed, int oceanCurrentSpeed, Boolean allowsMotorboats) throws RaceAlreadyExistsException {
@@ -108,15 +109,20 @@ public class BoatSimulatorController implements IBoatSimulatorController {
             throw new IllegalArgumentException(Constants.IncorrectBoatTypeMessage);
         }
         this.currentRace.addParticipant(boat);
-        return String.format("Boat with model %s has signed up for the current Race.", model);
+        return "Boat with model " + model + " has signed up for the current Race.";
     }
 
     public String startRace() throws InsufficientContestantsException, NoSetRaceException {
         this.ValidateRaceIsSet();
-        Map<Sailable, Double> winners = this.currentRace.getWinners();
+        Map<Sailable, Double> winners = this.currentRace.getParticipants();
         if (winners.size() < 3) {
             throw new InsufficientContestantsException(Constants.InsufficientContestantsMessage);
         }
+
+        winners = winners.entrySet().stream()
+                .sorted(Comparator.comparing(Map.Entry::getValue))
+                .limit(3).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (e1, e2) -> e1, LinkedHashMap::new));
 
         StringBuilder result = new StringBuilder();
         List<String> places = Arrays.asList("First", "Second", "Third");
@@ -143,8 +149,18 @@ public class BoatSimulatorController implements IBoatSimulatorController {
 
     @Override
     public String getStatistic() {
-        //TODO Bonus Task Implement me
-        throw new NotImplementedException();
+        double participants = this.currentRace.getParticipants().size();
+        double powerBoatPercentage = this.currentRace.getParticipants().keySet().stream()
+                .filter(p -> p.getClass().getSimpleName().contains("Power")).count() / participants * 100;
+        double rowBoatPercentage = this.currentRace.getParticipants().keySet().stream()
+                .filter(p -> p.getClass().getSimpleName().contains("Row")).count() / participants * 100;
+        double sailBoatPercentage = this.currentRace.getParticipants().keySet().stream()
+                .filter(p -> p.getClass().getSimpleName().contains("Sail")).count() / participants * 100;
+        double yachtBoatPercentage = this.currentRace.getParticipants().keySet().stream()
+                .filter(p -> p.getClass().getSimpleName().contains("Yacht")).count() / participants * 100;
+
+        return String.format("PowerBoat -> %.2f%% %nRowBoat -> %.2f%% %nSailBoat -> %.2f%% %nYacht -> %.2f%%",
+                powerBoatPercentage, rowBoatPercentage, sailBoatPercentage, yachtBoatPercentage);
     }
 
     private void ValidateRaceIsSet() throws NoSetRaceException {

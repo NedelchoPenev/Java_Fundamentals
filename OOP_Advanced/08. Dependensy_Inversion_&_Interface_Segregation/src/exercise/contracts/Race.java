@@ -15,5 +15,5 @@ public interface Race {
 
     void addParticipant(Sailable boat) throws DuplicateModelException;
 
-    Map<Sailable, Double> getWinners();
+    Map<Sailable, Double> getParticipants();
 }
